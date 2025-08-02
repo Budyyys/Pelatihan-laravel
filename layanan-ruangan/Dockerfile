@@ -1,69 +1,105 @@
-# Gunakan base image PHP 8.2-FPM-Alpine
-FROM php:8.2-fpm-alpine
+# ===== STAGE 1: Dependencies Build =====
+FROM php:8.2-fpm-alpine AS dependencies
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Instal dependensi sistem yang diperlukan
-RUN apk add --no-cache \
+# Install only essential build dependencies
+RUN apk add --no-cache --virtual .build-deps \
     build-base \
-    git \
-    unzip \
     mariadb-dev \
     libzip-dev \
     oniguruma-dev \
-    freetype-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    curl
+    && apk add --no-cache \
+    git \
+    unzip
 
-# Instal ekstensi PHP yang esensial
+# Install PHP extensions
 RUN docker-php-ext-install \
     pdo_mysql \
     opcache \
     bcmath \
     zip
 
-# Instal Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Salin file composer terlebih dahulu untuk memanfaatkan Docker layer caching
+# Copy composer files for dependency caching
 COPY composer.json composer.lock ./
 
-# Jalankan composer install untuk dependensi produksi
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+# Install dependencies with optimization
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-scripts \
+    --no-interaction \
+    --prefer-dist \
+    && composer clear-cache
 
-# Salin semua file aplikasi
-COPY . .
+# ===== STAGE 2: Production Build =====
+FROM php:8.2-fpm-alpine AS production
 
-# Jalankan composer scripts yang mungkin diperlukan
-RUN composer run-script post-autoload-dump
+# Set working directory
+WORKDIR /var/www/html
 
-# Atur izin file yang benar
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+# Install only runtime dependencies (smaller footprint)
+RUN apk add --no-cache \
+    mariadb-client \
+    libzip \
+    && rm -rf /var/cache/apk/*
 
-# Buat direktori yang diperlukan jika belum ada
-RUN mkdir -p /var/www/html/storage/logs \
-    && mkdir -p /var/www/html/storage/framework/cache/data \
-    && mkdir -p /var/www/html/storage/framework/sessions \
-    && mkdir -p /var/www/html/storage/framework/views
+# Copy PHP extensions from dependencies stage
+COPY --from=dependencies /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+COPY --from=dependencies /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
-# Konfigurasi PHP-FPM
-RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=4000" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.revalidate_freq=60" >> /usr/local/etc/php/conf.d/opcache.ini
+# Copy vendor from dependencies stage
+COPY --from=dependencies /var/www/html/vendor /var/www/html/vendor
+
+# Copy application files (exclude unnecessary files)
+COPY --chown=www-data:www-data . .
+
+# Remove development files and optimize
+RUN rm -rf \
+    .git \
+    .gitignore \
+    .gitattributes \
+    .editorconfig \
+    .env.example \
+    README.md \
+    tests \
+    phpunit.xml \
+    webpack.mix.js \
+    package.json \
+    package-lock.json \
+    node_modules \
+    && find . -name "*.md" -type f -delete \
+    && find . -name ".DS_Store" -type f -delete
+
+# Create necessary directories with correct permissions
+RUN mkdir -p storage/logs \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/framework/views \
+    bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Optimize PHP configuration
+RUN { \
+    echo 'opcache.enable=1'; \
+    echo 'opcache.enable_cli=0'; \
+    echo 'opcache.memory_consumption=64'; \
+    echo 'opcache.interned_strings_buffer=4'; \
+    echo 'opcache.max_accelerated_files=2000'; \
+    echo 'opcache.revalidate_freq=60'; \
+    echo 'opcache.fast_shutdown=1'; \
+    } > /usr/local/etc/php/conf.d/opcache.ini
 
 # Expose port 9000 untuk PHP-FPM
 EXPOSE 9000
 
-# Tetapkan user untuk menjalankan PHP-FPM
+# Switch to non-root user
 USER www-data
 
-# Perintah default untuk menjalankan php-fpm
+# Command to run PHP-FPM
 CMD ["php-fpm"]

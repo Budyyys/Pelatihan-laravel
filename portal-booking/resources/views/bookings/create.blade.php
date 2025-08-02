@@ -42,6 +42,7 @@
                             <label for="room_id" class="block text-sm font-medium text-gray-700">
                                 Pilih Ruangan
                             </label>
+                            
                             <select 
                                 id="room_id" 
                                 name="room_id" 

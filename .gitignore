@@ -1,0 +1,23 @@
+# Development logs
+logs/
+*.log
+
+# Docker Compose override (personal)
+docker-compose.override.yml
+
+# Environment files
+.env.local
+.env.development
+.env.staging
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

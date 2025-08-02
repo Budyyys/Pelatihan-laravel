@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RoomManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,17 @@ Route::middleware('auth')->group(function () {
 Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
 Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
 Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
 Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+
+// Room Management routes (using API backend)
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::resource('rooms', RoomManagementController::class);
+    
+    // API endpoints for AJAX calls
+    Route::get('/api/rooms', [RoomManagementController::class, 'apiIndex'])->name('api.rooms.index');
+    Route::get('/api/rooms/{id}', [RoomManagementController::class, 'apiShow'])->name('api.rooms.show');
+});
 
 require __DIR__.'/auth.php';

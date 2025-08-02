@@ -64,6 +64,38 @@ class BookingController extends Controller
         return redirect()->route('bookings.index')->with('success', 'Booking berhasil ditambahkan!');
     }
 
+    public function edit(Booking $booking)
+    {
+        $rooms = $this->roomService->getAllRooms();
+        return view('bookings.edit', compact('booking', 'rooms'));
+    }
+
+    public function update(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'user_name' => 'required|string|max:255',
+            'room_id' => 'required|integer',
+            'title' => 'required|string|max:255',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+        ]);
+
+        // Validate room exists in API
+        if (!$this->roomService->isRoomValid($request->room_id)) {
+            return back()->withErrors(['room_id' => 'Ruangan yang dipilih tidak tersedia.'])->withInput();
+        }
+
+        $booking->update([
+            'user_name' => $request->user_name,
+            'room_id' => $request->room_id,
+            'title' => $request->title,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+        ]);
+
+        return redirect()->route('bookings.index')->with('success', 'Booking berhasil diperbarui!');
+    }
+
     public function destroy(Booking $booking)
     {
         $booking->delete();
