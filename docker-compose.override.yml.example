@@ -1,0 +1,84 @@
+# docker-compose.override.yml
+# File ini akan otomatis di-merge dengan docker-compose.yml
+# Khusus untuk development environment
+
+services:
+  # Portal Booking Development Overrides
+  portal-booking-app:
+    environment:
+      - APP_DEBUG=true
+      - APP_LOG_LEVEL=debug
+      - ROOM_SERVICE_API_URL=http://room-service-nginx/api
+    volumes:
+      # Live reload untuk development
+      - ./portal-booking:/var/www/html:cached
+      - portal-booking-vendor:/var/www/html/vendor
+      - portal-booking-node-modules:/var/www/html/node_modules
+
+  # Room Service Development Overrides  
+  room-service-app:
+    environment:
+      - APP_DEBUG=true
+      - APP_LOG_LEVEL=debug
+    volumes:
+      # Live reload untuk development
+      - ./layanan-ruangan:/var/www/html:cached
+      - room-service-vendor:/var/www/html/vendor
+
+  # Database Access untuk Development
+  portal-booking-db:
+    ports:
+      - "3308:3306"  # Akses dari host untuk debugging
+    environment:
+      - MYSQL_GENERAL_LOG=1
+      - MYSQL_GENERAL_LOG_FILE=/var/lib/mysql/general.log
+
+  room-service-db:
+    ports:
+      - "3307:3306"  # Akses dari host untuk debugging
+
+  # Development Tools
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOSTS: portal-booking-db,room-service-db
+      PMA_PORTS: 3306,3306
+      PMA_USER: root
+      PMA_PASSWORD: secret
+    ports:
+      - "8090:80"
+    depends_on:
+      - portal-booking-db
+      - room-service-db
+    networks:
+      - portal-booking-network
+      - room-service-network
+      - shared-network
+
+  # Redis untuk Caching (Development)
+  redis:
+    image: redis:alpine
+    container_name: redis-dev
+    ports:
+      - "6379:6379"
+    networks:
+      - shared-network
+
+  # MailHog untuk Email Testing
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP
+    networks:
+      - shared-network
+
+volumes:
+  portal-booking-vendor:
+    driver: local
+  portal-booking-node-modules:
+    driver: local
+  room-service-vendor:
+    driver: local

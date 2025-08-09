@@ -27,9 +27,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy composer files for dependency caching
 COPY composer.json composer.lock ./
 
-# Install dependencies with optimization
+# Install dependencies with all packages (including dev)
 RUN composer install \
-    --no-dev \
     --optimize-autoloader \
     --no-scripts \
     --no-interaction \
@@ -52,11 +51,17 @@ RUN apk add --no-cache \
 COPY --from=dependencies /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 COPY --from=dependencies /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
+# Install Composer in production stage for development
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # Copy vendor from dependencies stage
 COPY --from=dependencies /var/www/html/vendor /var/www/html/vendor
 
 # Copy application files (exclude unnecessary files)
 COPY --chown=www-data:www-data . .
+
+# Regenerate autoload in production mode without dev packages
+RUN composer dump-autoload --optimize --classmap-authoritative
 
 # Remove development files and optimize
 RUN rm -rf \

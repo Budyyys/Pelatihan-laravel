@@ -9,8 +9,8 @@
             </div>
             <div class="flex items-center space-x-3">
                 <button onclick="openCreateForm()" 
-                        class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2.5 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
                     <span>New Booking</span>
@@ -21,29 +21,24 @@
 
     <!-- Modern Styling -->
     <style>
-        /* Modern tooltip styling */
-        .tooltip {
-            position: relative;
-        }
-        
+        /* Minimal, modern additions. Keep it lightweight; most styles via Tailwind */
+        .tooltip { position: relative; }
         .tooltip:hover::after {
             content: attr(title);
             position: absolute;
             bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
+            background: rgba(17, 24, 39, 0.95);
+            color: #fff;
             padding: 8px 12px;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 12px;
             white-space: nowrap;
-            z-index: 1000;
-            pointer-events: none;
-            opacity: 0;
-            animation: fadeInTooltip 0.2s ease-out forwards;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+            z-index: 50;
+            animation: tooltipFadeIn 0.2s ease-out;
         }
-        
         .tooltip:hover::before {
             content: '';
             position: absolute;
@@ -51,149 +46,25 @@
             left: 50%;
             transform: translateX(-50%);
             border: 4px solid transparent;
-            border-top-color: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            pointer-events: none;
-            opacity: 0;
-            animation: fadeInTooltip 0.2s ease-out forwards;
+            border-top-color: rgba(17, 24, 39, 0.95);
+            z-index: 50;
+            animation: tooltipFadeIn 0.2s ease-out;
         }
-        
-        @keyframes fadeInTooltip {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(4px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
+        @keyframes tooltipFadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
-        
-        /* Enhanced hover effects */
-        .transform {
-            transition: transform 0.2s ease-in-out;
-        }
-        
-        /* Backdrop blur support */
-        .backdrop-blur-sm {
-            backdrop-filter: blur(4px);
-        }
-        
-        /* Loading animation */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        /* Modern scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        
-        /* Enhanced focus states */
-        .focus\:ring-2:focus {
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-        }
-        
-        /* Modern card hover effects */
-        .group:hover .group-hover\:shadow-lg {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* Smooth transitions for all interactive elements */
-        button, input, select, textarea {
-            transition: all 0.15s ease-in-out;
-        }
-        
-        /* Modal animation improvements */
-        .modal-enter {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-        
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-        
-        /* Status badge animations */
-        .status-badge {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Interactive elements scaling */
-        .hover\:scale-105:hover {
-            transform: scale(1.05);
-        }
-        
-        /* Focus visible for accessibility */
-        .focus\:outline-none:focus-visible {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-        
-        /* Mobile card improvements */
-        .booking-card-mobile {
-            transition: all 0.2s ease-in-out;
-        }
-        
-        .booking-card-mobile:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Better spacing for mobile */
-        @media (max-width: 1024px) {
-            .space-y-4 > * + * {
-                margin-top: 1rem;
-            }
-        }
-        
-        /* Status badge consistency */
-        .status-badge {
-            font-weight: 500;
-            letter-spacing: 0.025em;
-        }
-        
-        /* Action button improvements */
-        .action-button {
-            font-weight: 500;
-            transition: all 0.15s ease-in-out;
-        }
-        
-        .action-button:hover {
-            transform: translateY(-1px);
-        }
+        .modal-enter { opacity: 0; transform: scale(.98); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity .2s ease, transform .2s ease; }
+        .sticky-header thead th { position: sticky; top: 0; background: #fff; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .booking-card-mobile:hover { transform: translateY(-1px); }
+        /* Smooth focus states */
+        input:focus, select:focus, button:focus { outline: none; }
+        /* Custom scrollbar for webkit browsers */
+        .overflow-x-auto::-webkit-scrollbar { height: 6px; }
+        .overflow-x-auto::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+        .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 
     <div class="py-6">
@@ -253,155 +124,36 @@
                 </div>
             </div>
 
-            <!-- Filters and Search -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Booking List</h3>
-                        <p class="text-sm text-gray-500">Manage all your meeting room reservations</p>
-                    </div>
-                    
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <!-- Search Input -->
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
-                            <input type="text" id="searchInput" placeholder="Search bookings..." 
-                                   class="pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-80 transition-colors">
-                        </div>
-
-                        <!-- Filter Dropdown -->
-                        <select id="statusFilter" class="px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                            <option value="">All Status</option>
-                            <option value="upcoming">Upcoming</option>
-                            <option value="today">Today</option>
-                            <option value="past">Past</option>
-                        </select>
-
-                        <!-- Sort Dropdown -->
-                        <select id="sortBy" class="px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="date_asc">Date Ascending</option>
-                            <option value="date_desc">Date Descending</option>
-                        </select>
+            <!-- Search Component Section -->
+            <div class="mb-20">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100 shadow-sm">
+                    <div class="relative w-full max-w-md mx-auto">
+                        <span class="sr-only">Search bookings</span>
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </span>
+                        <input id="searchInput" type="text" placeholder="Search bookings..." class="w-full pl-10 pr-4 py-3 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all duration-200 shadow-sm" />
                     </div>
                 </div>
             </div>
 
-            <!-- Modern Booking Table/Cards -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                @if($bookings->count() > 0)
-                    <!-- Desktop Table View -->
-                    <div class="hidden lg:block">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead class="bg-gray-50 border-b border-gray-100">
-                                    <tr>
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Booking</th>
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Schedule</th>
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100" id="bookingTableBody">
-                                    @foreach($bookings as $booking)
-                                        <tr class="hover:bg-gray-50 transition-colors duration-150" 
-                                            data-created="{{ $booking->created_at->toISOString() }}" 
-                                            data-start-time="{{ $booking->start_time }}">
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-semibold text-sm">
-                                                        #{{ $booking->id }}
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-semibold text-gray-900">{{ $booking->title }}</div>
-                                                        <div class="text-sm text-gray-500">{{ $booking->user_name ?? 'N/A' }}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 room-badge" data-room-id="{{ $booking->room_id }}">
-                                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                                    </svg>
-                                                    Loading...
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="text-sm text-gray-900 font-medium">
-                                                    {{ \Carbon\Carbon::parse($booking->start_time)->format('M d, Y') }}
-                                                </div>
-                                                <div class="text-sm text-gray-500">
-                                                    {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - 
-                                                    {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                @php
-                                                    $now = now();
-                                                    $startTime = \Carbon\Carbon::parse($booking->start_time);
-                                                    $endTime = \Carbon\Carbon::parse($booking->end_time);
-                                                @endphp
-                                                @if($now->lt($startTime))
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700">
-                                                        <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1.5"></div>
-                                                        Upcoming
-                                                    </span>
-                                                @elseif($now->between($startTime, $endTime))
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-700">
-                                                        <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mr-1.5"></div>
-                                                        Active
-                                                    </span>
-                                                @else
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700">
-                                                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full mr-1.5"></div>
-                                                        Completed
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td class="px-6 py-4 text-center">
-                                                <div class="flex items-center justify-center space-x-2">
-                                                    <button onclick="openEditForm({{ $booking->id }})" 
-                                                            class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors duration-150 tooltip" title="Edit Booking">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                        </svg>
-                                                    </button>
-                                                    <button onclick="viewBookingDetails({{ $booking->id }})" 
-                                                            class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150 tooltip" title="View Details">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                                        </svg>
-                                                    </button>
-                                                    <form action="/bookings/{{ $booking->id }}" method="POST" class="inline" 
-                                                          onsubmit="return confirm('Are you sure you want to delete this booking?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150 tooltip" title="Delete Booking">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                            </svg>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+            <!-- Visual Separator -->
+            <div class="flex items-center justify-center mb-12">
+                <div class="flex-grow h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                <div class="px-4">
+                    <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+                </div>
+                <div class="flex-grow h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+            </div>
 
-                    <!-- Mobile Card View -->
-                    <div class="lg:hidden space-y-4 p-4" id="bookingCardsContainer">
+            <!-- Booking Cards Section -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    @if($bookings->count() > 0)
+                    <!-- Card View for All Devices -->
+                    <div class="space-y-4 p-4" id="bookingCardsContainer">
                         @foreach($bookings as $booking)
-                            <div class="bg-gray-50 rounded-xl p-4 booking-card-mobile border border-gray-100"
+                            <div class="bg-white rounded-xl p-4 booking-card-mobile border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200"
                                  data-created="{{ $booking->created_at->toISOString() }}" 
                                  data-start-time="{{ $booking->start_time }}">
                                 <div class="flex items-start justify-between mb-3">
@@ -420,17 +172,17 @@
                                         $endTime = \Carbon\Carbon::parse($booking->end_time);
                                     @endphp
                                     @if($now->lt($startTime))
-                                        <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
                                             <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1.5"></div>
                                             Upcoming
                                         </span>
                                     @elseif($now->between($startTime, $endTime))
-                                        <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 ring-1 ring-blue-200">
                                             <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mr-1.5"></div>
                                             Active
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 ring-1 ring-gray-200">
                                             <div class="w-1.5 h-1.5 bg-gray-400 rounded-full mr-1.5"></div>
                                             Completed
                                         </span>
@@ -449,25 +201,27 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         <span class="font-medium">{{ \Carbon\Carbon::parse($booking->start_time)->format('M d, Y') }}</span>
-                                        <span class="mx-1">•</span>
+                                        <span class="mx-1 text-gray-400">•</span>
                                         <span>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}</span>
                                     </div>
                                 </div>
                                 
-                                <div class="flex items-center justify-end space-x-2 pt-3 border-t border-gray-200">
+                                <div class="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100">
                                     <button onclick="openEditForm({{ $booking->id }})" 
-                                            class="action-button px-3 py-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors duration-150 text-sm font-medium border border-amber-200 hover:border-amber-300">
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors duration-150 ring-1 ring-amber-200">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
                                         Edit
-                                    </button>
-                                    <button onclick="viewBookingDetails({{ $booking->id }})" 
-                                            class="action-button px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150 text-sm font-medium border border-blue-200 hover:border-blue-300">
-                                        View
                                     </button>
                                     <form action="/bookings/{{ $booking->id }}" method="POST" class="inline" 
                                           onsubmit="return confirm('Are you sure you want to delete this booking?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="action-button px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150 text-sm font-medium border border-red-200 hover:border-red-300">
+                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors duration-150 ring-1 ring-red-200">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
                                             Delete
                                         </button>
                                     </form>
@@ -475,26 +229,25 @@
                             </div>
                         @endforeach
                     </div>
-                @else
-                    <div class="text-center py-16">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
+                    @else
+                        <div class="text-center py-16">
+                            <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 ring-1 ring-inset ring-gray-100">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">No bookings yet</h3>
+                            <p class="text-gray-500 mb-6">Create your first reservation in seconds</p>
+                            <button onclick="openCreateForm()" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"/></svg>
+                                Create Booking
+                            </button>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No Bookings Yet</h3>
-                        <p class="text-gray-500 mb-6">Start by creating your first meeting room booking</p>
-                        <button onclick="openCreateForm()" 
-                                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-                            Create First Booking
-                        </button>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modern Create Booking Modal -->
+    <!-- Create Booking Modal -->
     <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4" id="createBookingModal">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-95">
             <!-- Modal Header -->
@@ -527,7 +280,7 @@
                     </label>
                     <input type="text" id="user_name" name="user_name" required
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150"
-                           placeholder="Enter organizer name" value="{{ old('user_name', Auth::user()->name) }}">
+                           placeholder="Enter organizer name" value="{{ old('user_name', Auth::user()?->name ?? '') }}">
                     @error('user_name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -610,7 +363,7 @@
         </div>
     </div>
 
-    <!-- Modern Edit Booking Modal -->
+    <!-- Edit Booking Modal -->
     <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4" id="editBookingModal">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-95">
             <!-- Modal Header -->
@@ -805,87 +558,20 @@
             });
         }
         
-        // Enhanced search functionality for both desktop and mobile
+        // Enhanced search functionality
         function performSearch() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
-            
-            // Search in desktop table
-            const tableRows = document.querySelectorAll('#bookingTableBody tr');
-            tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const statusElement = row.querySelector('[class*="bg-emerald-"], [class*="bg-blue-"], [class*="bg-gray-"]');
-                const status = statusElement ? statusElement.textContent.toLowerCase().trim() : '';
-                
-                const matchesSearch = searchTerm === '' || text.includes(searchTerm);
-                const matchesStatus = statusFilter === '' || status.includes(statusFilter);
-                
-                row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
-            });
             
             // Search in mobile cards
             const mobileCards = document.querySelectorAll('.booking-card-mobile');
             mobileCards.forEach(card => {
                 const text = card.textContent.toLowerCase();
-                const statusElement = card.querySelector('[class*="bg-emerald-"], [class*="bg-blue-"], [class*="bg-gray-"]');
-                const status = statusElement ? statusElement.textContent.toLowerCase().trim() : '';
-                
                 const matchesSearch = searchTerm === '' || text.includes(searchTerm);
-                const matchesStatus = statusFilter === '' || status.includes(statusFilter);
-                
-                card.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+                card.style.display = matchesSearch ? '' : 'none';
             });
         }
 
         document.getElementById('searchInput').addEventListener('input', performSearch);
-        document.getElementById('statusFilter').addEventListener('change', performSearch);
-        
-        // Sort functionality
-        document.getElementById('sortBy').addEventListener('change', function() {
-            const sortBy = this.value;
-            const tableBody = document.getElementById('bookingTableBody');
-            const cardsContainer = document.getElementById('bookingCardsContainer');
-            
-            if (tableBody) {
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-                rows.sort((a, b) => {
-                    switch(sortBy) {
-                        case 'newest':
-                            return new Date(b.dataset.created) - new Date(a.dataset.created);
-                        case 'oldest':
-                            return new Date(a.dataset.created) - new Date(b.dataset.created);
-                        case 'date_asc':
-                            return new Date(a.dataset.startTime) - new Date(b.dataset.startTime);
-                        case 'date_desc':
-                            return new Date(b.dataset.startTime) - new Date(a.dataset.startTime);
-                        default:
-                            return 0;
-                    }
-                });
-                
-                rows.forEach(row => tableBody.appendChild(row));
-            }
-            
-            if (cardsContainer) {
-                const cards = Array.from(cardsContainer.querySelectorAll('.booking-card-mobile'));
-                cards.sort((a, b) => {
-                    switch(sortBy) {
-                        case 'newest':
-                            return new Date(b.dataset.created) - new Date(a.dataset.created);
-                        case 'oldest':
-                            return new Date(a.dataset.created) - new Date(b.dataset.created);
-                        case 'date_asc':
-                            return new Date(a.dataset.startTime) - new Date(b.dataset.startTime);
-                        case 'date_desc':
-                            return new Date(b.dataset.startTime) - new Date(a.dataset.startTime);
-                        default:
-                            return 0;
-                    }
-                });
-                
-                cards.forEach(card => cardsContainer.appendChild(card));
-            }
-        });
         
         // Auto-adjust end time when start time changes
         document.getElementById('start_time').addEventListener('change', function() {
