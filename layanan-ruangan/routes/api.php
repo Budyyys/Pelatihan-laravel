@@ -23,6 +23,7 @@ Route::get('/user', function (Request $request) {
 // Additional routes (define before apiResource)
 Route::get('rooms/search', [RoomController::class, 'search']);
 Route::get('rooms/statistics', [RoomController::class, 'statistics']);
+Route::post('rooms/test-store', [RoomController::class, 'testStore']);
 
 // CRUD routes untuk rooms
 Route::apiResource('rooms', RoomController::class);

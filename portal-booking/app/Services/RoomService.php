@@ -22,7 +22,6 @@ class RoomService
     private function getHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . $this->token,
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ];
@@ -51,10 +50,13 @@ class RoomService
                 'response' => $response->body()
             ]);
             
+            // Return empty array when API fails
             return [];
             
         } catch (\Exception $e) {
             Log::error('Error fetching rooms from API: ' . $e->getMessage());
+            
+            // Return empty array when API fails
             return [];
         }
     }
@@ -185,7 +187,15 @@ class RoomService
      */
     public function isRoomValid(int $roomId): bool
     {
-        $room = $this->getRoomById($roomId);
-        return $room !== null;
+        // Instead of making a separate API call, check against the rooms list
+        $rooms = $this->getAllRooms();
+        
+        foreach ($rooms as $room) {
+            if (isset($room['id']) && (int)$room['id'] === $roomId) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

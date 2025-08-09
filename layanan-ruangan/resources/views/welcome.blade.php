@@ -661,7 +661,7 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify(data)
                     });
@@ -671,7 +671,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify(data)
                     });
@@ -775,7 +775,7 @@
                     const response = await fetch(`/api/rooms/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': csrfToken
+                            'Accept': 'application/json'
                         }
                     });
                     

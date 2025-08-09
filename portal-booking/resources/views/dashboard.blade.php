@@ -327,9 +327,167 @@
         .submit-button-enhanced:hover {
             animation: none !important;
         }
+
+        /* Alert System Styles */
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .alert-container {
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            pointer-events: none;
+        }
+
+        .alert-box {
+            max-width: 600px;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 1.5;
+            animation: slideInDown 0.4s ease-out;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .alert-conflict {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .alert-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            font-size: 15px;
+        }
+
+        .alert-message {
+            opacity: 0.95;
+            font-size: 13px;
+        }
+
+        .alert-close {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .alert-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+        }
+
+        .alert-box.hiding {
+            animation: slideOutUp 0.3s ease-in forwards;
+        }
+
+        /* Progress bar for auto-dismiss */
+        .alert-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 12px 12px;
+            animation: alertProgress 5s linear forwards;
+        }
+
+        @keyframes alertProgress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
     </style>
 
     <div class="py-8">
+        <!-- Alert System -->
+        <div class="alert-overlay" id="alertOverlay" style="display: none;">
+            <div class="alert-container">
+                <div class="alert-box" id="alertBox">
+                    <div class="alert-icon" id="alertIcon"></div>
+                    <div class="alert-content">
+                        <div class="alert-title" id="alertTitle"></div>
+                        <div class="alert-message" id="alertMessage"></div>
+                    </div>
+                    <button class="alert-close" onclick="hideAlert()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="alert-progress" id="alertProgress"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
@@ -487,46 +645,44 @@
                                 <select id="room_id" name="room_id" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
                                     <option value="">-- Pilih Ruangan --</option>
-                                    @if(isset($rooms) && count($rooms) > 0)
-                                        @foreach($rooms as $room)
-                                            @php
-                                                $statusClass = 'room-option-default';
-                                                $statusText = 'Tidak Diketahui';
-                                                if(isset($room['status'])) {
-                                                    switch($room['status']) {
-                                                        case 'available':
-                                                            $statusClass = 'room-option-available';
-                                                            $statusText = 'Tersedia';
-                                                            break;
-                                                        case 'busy':
-                                                            $statusClass = 'room-option-busy';
-                                                            $statusText = 'Sedang Digunakan';
-                                                            break;
-                                                        case 'maintenance':
-                                                            $statusClass = 'room-option-maintenance';
-                                                            $statusText = 'Maintenance';
-                                                            break;
-                                                    }
+                                    @forelse($rooms as $room)
+                                        @php
+                                            $statusClass = 'room-option-default';
+                                            $statusText = 'Tersedia';
+                                            if(isset($room['status'])) {
+                                                switch($room['status']) {
+                                                    case 'available':
+                                                        $statusClass = 'room-option-available';
+                                                        $statusText = 'Tersedia';
+                                                        break;
+                                                    case 'busy':
+                                                        $statusClass = 'room-option-busy';
+                                                        $statusText = 'Sedang Digunakan';
+                                                        break;
+                                                    case 'maintenance':
+                                                        $statusClass = 'room-option-maintenance';
+                                                        $statusText = 'Maintenance';
+                                                        break;
                                                 }
-                                            @endphp
-                                            <option value="{{ $room['id'] }}" 
-                                                    class="{{ $statusClass }}"
-                                                    data-capacity="{{ $room['capacity'] ?? 'N/A' }}"
-                                                    data-facilities="{{ json_encode($room['facilities'] ?? []) }}"
-                                                    data-status="{{ $room['status'] ?? 'unknown' }}"
-                                                    {{ old('room_id') == $room['id'] ? 'selected' : '' }}
-                                                    {{ isset($room['status']) && $room['status'] === 'busy' ? 'disabled' : '' }}>
-                                                🏠 {{ $room['name'] }}
-                                                @if(isset($room['capacity']))
-                                                    (👥{{ $room['capacity'] }})
-                                                @endif
-                                                - {{ $statusText }}
-                                            </option>
-                                        @endforeach
-                                    @else
-                                        <option value="1" class="room-option-available" data-capacity="10" data-facilities='[{"name":"Proyektor","icon":"fas fa-video","color":"#3b82f6","quantity":1}]' data-status="available">🏠 Meeting Room A (👥10) - Tersedia</option>
-                                        <option value="2" class="room-option-busy" data-capacity="20" data-facilities='[]' data-status="busy" disabled>🏠 Conference Room B (👥20) - Sedang Digunakan</option>
-                                    @endif
+                                            }
+                                        @endphp
+                                        <option value="{{ $room['id'] }}" 
+                                                class="{{ $statusClass }}"
+                                                data-capacity="{{ $room['capacity'] ?? 'N/A' }}"
+                                                data-facilities="{{ json_encode($room['facilities'] ?? []) }}"
+                                                data-facilities-text="{{ $room['facilities_text'] ?? '' }}"
+                                                data-status="{{ $room['status'] ?? 'available' }}"
+                                                {{ old('room_id') == $room['id'] ? 'selected' : '' }}
+                                                {{ isset($room['status']) && $room['status'] === 'busy' ? 'disabled' : '' }}>
+                                            🏠 {{ $room['name'] }}
+                                            @if(isset($room['capacity']))
+                                                (👥{{ $room['capacity'] }})
+                                            @endif
+                                            - {{ $statusText }}
+                                        </option>
+                                    @empty
+                                        <option value="" disabled>Tidak ada ruangan tersedia</option>
+                                    @endforelse
                                 </select>
                                  <div id="room_id_error" class="text-red-600 text-xs mt-1"></div>
                             </div>
@@ -641,27 +797,65 @@
                 
                 const capacity = selectedOption.getAttribute('data-capacity') || 'N/A';
                 const facilitiesData = selectedOption.getAttribute('data-facilities') || '';
-                const status = selectedOption.getAttribute('data-status') || 'unknown';
+                const facilitiesText = selectedOption.getAttribute('data-facilities-text') || '';
+                const status = selectedOption.getAttribute('data-status') || 'available';
                 
                 let facilitiesList = [];
                 if (facilitiesData) {
                     try {
                         facilitiesList = JSON.parse(facilitiesData);
                     } catch (e) {
-                        facilitiesList = facilitiesData.split(',').map(f => ({ name: f.trim() })).filter(f => f.name);
+                        console.log('Failed to parse facilities JSON, using fallback');
+                        facilitiesList = [];
                     }
                 }
                 
-                let statusInfo = { text: 'Tidak Diketahui', icon: 'circle', color: '#6b7280' };
+                // If facilities array is empty but facilities_text exists, parse it
+                if (facilitiesList.length === 0 && facilitiesText) {
+                    facilitiesList = facilitiesText.split(',').map(f => ({
+                        name: f.trim(),
+                        icon: 'fas fa-star',
+                        color: '#0ea5e9'
+                    })).filter(f => f.name);
+                }
+                
+                let statusInfo = { text: 'Tersedia', icon: 'check-circle', color: '#10b981' };
                 switch(status) {
                     case 'available': statusInfo = { text: 'Tersedia', icon: 'check-circle', color: '#10b981' }; break;
                     case 'busy': statusInfo = { text: 'Sedang Digunakan', icon: 'times-circle', color: '#ef4444' }; break;
                     case 'maintenance': statusInfo = { text: 'Maintenance', icon: 'tools', color: '#f59e0b' }; break;
+                    default: statusInfo = { text: 'Tersedia', icon: 'check-circle', color: '#10b981' }; break;
                 }
                 
                 const detailsDiv = document.createElement('div');
                 detailsDiv.id = 'room-details';
                 detailsDiv.className = 'room-details-box';
+                
+                let facilitiesHtml = '';
+                if (facilitiesList.length > 0) {
+                    facilitiesHtml = `
+                        <div class="room-detail-item" style="align-items: flex-start; grid-column: 1 / -1;">
+                            <i class="fas fa-cogs"></i>
+                            <div>
+                                <strong>Fasilitas:</strong>
+                                <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px;">
+                                    ${facilitiesList.map(f => `
+                                        <span style="background: ${f.color || '#0ea5e9'}; color: white; padding: 4px 10px; border-radius: 16px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="${f.icon || 'fas fa-star'}" style="font-size: 10px;"></i>
+                                            ${f.name}
+                                            ${f.quantity && f.quantity > 1 ? ` (${f.quantity})` : ''}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>`;
+                } else {
+                    facilitiesHtml = `
+                        <div class="room-detail-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span><strong>Fasilitas:</strong> Informasi tidak tersedia</span>
+                        </div>`;
+                }
                 
                 detailsDiv.innerHTML = `
                     <div class="room-details-header">
@@ -672,22 +866,7 @@
                         <div class="room-detail-item"><i class="fas fa-door-open"></i><span><strong>Nama:</strong> ${roomText.split(' - ')[0]}</span></div>
                         <div class="room-detail-item"><i class="fas fa-users"></i><span><strong>Kapasitas:</strong> ${capacity} orang</span></div>
                         <div class="room-detail-item"><i class="fas fa-${statusInfo.icon}" style="color: ${statusInfo.color};"></i><span><strong>Status:</strong> ${statusInfo.text}</span></div>
-                        ${facilitiesList.length > 0 ? `
-                        <div class="room-detail-item" style="align-items: flex-start; grid-column: 1 / -1;">
-                            <i class="fas fa-cogs"></i>
-                            <div>
-                                <strong>Fasilitas:</strong>
-                                <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px;">
-                                    ${facilitiesList.map(f => `
-                                        <span style="background: ${f.color || '#0ea5e9'}; color: white; padding: 4px 10px; border-radius: 16px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">
-                                            <i class="${f.icon || 'fas fa-star'}" style="font-size: 10px;"></i>
-                                            ${f.name}
-                                            ${f.quantity > 1 ? ` (${f.quantity})` : ''}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>` : ''}
+                        ${facilitiesHtml}
                     </div>`;
                 
                 roomSelect.parentNode.insertBefore(detailsDiv, roomSelect.nextSibling);
@@ -793,5 +972,166 @@
                 openCreateForm();
             });
         @endif
+
+        // Alert System Functions
+        function showAlert(type, title, message, autoHide = true) {
+            const overlay = document.getElementById('alertOverlay');
+            const box = document.getElementById('alertBox');
+            const icon = document.getElementById('alertIcon');
+            const titleElement = document.getElementById('alertTitle');
+            const messageElement = document.getElementById('alertMessage');
+            const progress = document.getElementById('alertProgress');
+
+            // Reset classes
+            box.className = 'alert-box';
+            
+            // Set type-specific styling and icons
+            switch (type) {
+                case 'success':
+                    box.classList.add('alert-success');
+                    icon.innerHTML = '<i class="fas fa-check"></i>';
+                    break;
+                case 'error':
+                case 'conflict':
+                    box.classList.add(type === 'error' ? 'alert-error' : 'alert-conflict');
+                    icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                    break;
+                default:
+                    box.classList.add('alert-success');
+                    icon.innerHTML = '<i class="fas fa-info"></i>';
+            }
+
+            // Set content
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+
+            // Show alert
+            overlay.style.display = 'block';
+            
+            // Remove any existing progress bar animation
+            progress.style.animation = 'none';
+            progress.offsetHeight; // Force reflow
+            
+            if (autoHide) {
+                progress.style.animation = 'alertProgress 5s linear forwards';
+                setTimeout(() => {
+                    hideAlert();
+                }, 5000);
+            } else {
+                progress.style.display = 'none';
+            }
+        }
+
+        function hideAlert() {
+            const overlay = document.getElementById('alertOverlay');
+            const box = document.getElementById('alertBox');
+            
+            box.classList.add('hiding');
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                box.classList.remove('hiding');
+            }, 300);
+        }
+
+        // Show alerts based on Laravel session data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add close button event listener
+            const closeBtn = document.getElementById('alertClose');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', hideAlert);
+            }
+
+            // Check for Laravel session alerts
+            @if(session('success'))
+                showAlert('success', 'Berhasil!', '{{ session("success") }}');
+            @endif
+
+            @if($errors->has('schedule'))
+                showAlert('conflict', 'Jadwal Bentrok!', '{{ $errors->first("schedule") }}', false);
+            @endif
+
+            @if($errors->any() && !$errors->has('schedule'))
+                const errorMessages = [
+                    @foreach($errors->all() as $error)
+                        '{{ $error }}',
+                    @endforeach
+                ];
+                showAlert('error', 'Kesalahan Input', errorMessages.join(' '), false);
+            @endif
+        });
+
+        // Enhanced form validation with better error display
+        function validateBookingForm() {
+            let isValid = true;
+            let firstErrorField = null;
+            let errorMessages = [];
+            const fieldsToValidate = ['user_name', 'room_id', 'title', 'start_time', 'end_time'];
+
+            fieldsToValidate.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const errorDiv = document.getElementById(`${fieldId}_error`);
+                field.classList.remove('border-red-500');
+                field.classList.add('border-gray-300');
+                if (errorDiv) errorDiv.textContent = '';
+            });
+
+            fieldsToValidate.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    const errorDiv = document.getElementById(`${fieldId}_error`);
+                    const fieldName = field.previousElementSibling.textContent.replace('*', '').trim();
+                    const message = `${fieldName} wajib diisi`;
+                    
+                    field.classList.add('border-red-500');
+                    if (errorDiv) errorDiv.textContent = message;
+                    errorMessages.push(message);
+                    if (!firstErrorField) firstErrorField = field;
+                    isValid = false;
+                }
+            });
+
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
+            const startTime = startTimeInput.value;
+            const endTime = endTimeInput.value;
+
+            if (startTime && endTime) {
+                const start = new Date(startTime);
+                const end = new Date(endTime);
+                
+                if (end <= start) {
+                    const errorDiv = document.getElementById('end_time_error');
+                    const message = 'Waktu selesai harus setelah waktu mulai';
+                    endTimeInput.classList.add('border-red-500');
+                    errorDiv.textContent = message;
+                    errorMessages.push(message);
+                    if (!firstErrorField) firstErrorField = endTimeInput;
+                    isValid = false;
+                }
+                
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - 1); 
+
+                if (start < now) {
+                    const errorDiv = document.getElementById('start_time_error');
+                    const message = 'Tidak dapat booking untuk waktu yang sudah lewat';
+                    startTimeInput.classList.add('border-red-500');
+                    errorDiv.textContent = message;
+                    errorMessages.push(message);
+                    if (!firstErrorField) firstErrorField = startTimeInput;
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                showAlert('error', 'Kesalahan Input', errorMessages.join('. '), false);
+                if (firstErrorField) {
+                    firstErrorField.focus();
+                }
+            }
+            
+            return isValid;
+        }
     </script>
 </x-app-layout>
